@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_api_demo/services/rest_api_services.dart';
 import 'package:flutter_api_demo/view.dart';
 
 void main() {
@@ -18,6 +19,12 @@ class _APIDemo extends State<MyApp> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -32,10 +39,8 @@ class _APIDemo extends State<MyApp> {
                     padding: EdgeInsets.all(10),
                     child: Text(
                       'API Creation and Hosting\nNodeJS',
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 30),
+                      style:
+                          TextStyle(color: Colors.blue, fontWeight: FontWeight.w500, fontSize: 30),
                     )),
                 Container(
                     alignment: Alignment.center,
@@ -55,8 +60,8 @@ class _APIDemo extends State<MyApp> {
                           keyboardType: TextInputType.name,
                           maxLines: 1,
                           maxLength: 20,
-                          validator: (value){
-                            if(value == null || value == "" || value.isEmpty){
+                          validator: (value) {
+                            if (value == null || value == "" || value.isEmpty) {
                               return "Valid Name Required";
                             }
                             return null;
@@ -75,8 +80,8 @@ class _APIDemo extends State<MyApp> {
                           keyboardType: TextInputType.number,
                           maxLines: 1,
                           maxLength: 10,
-                          validator: (value){
-                            if(value.length < 10){
+                          validator: (value) {
+                            if (value.length < 10) {
                               return "Valid Mobile Number Required";
                             }
                             return null;
@@ -108,29 +113,26 @@ class _APIDemo extends State<MyApp> {
                     )),
                 Container(
                     child: Row(
-                      children: <Widget>[
-                        Text('View Saved Data'),
-                        FlatButton(
-                          textColor: Colors.blue,
-                          child: Text(
-                            'Click here',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ViewData()),
-                            );
-                          },
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ))
+                  children: <Widget>[
+                    Text('View Saved Data'),
+                    FlatButton(
+                      textColor: Colors.blue,
+                      child: Text(
+                        'Click here',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ViewData()),
+                        );
+                      },
+                    )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ))
               ],
-            )
-        )
-
-    );
+            )));
   }
 
   /*
@@ -138,7 +140,7 @@ class _APIDemo extends State<MyApp> {
   Save Data into API
   ============
    */
-  void _saveData(){
+  void _saveData() {
     debugPrint("Save button clicked");
     debugPrint(nameController.text);
     debugPrint(mobileController.text);
