@@ -25,6 +25,7 @@ class _ViewDataState extends State<ViewData> {
 
   @override
   Widget build(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('View API Data'),
@@ -45,6 +46,9 @@ class _ViewDataState extends State<ViewData> {
                         value: ViewDataBy.name,
                         groupValue: _mode,
                         onChanged: (ViewDataBy value) {
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
                           setState(() {
                             _mode = value;
                             _radioVal = "name";
@@ -60,6 +64,9 @@ class _ViewDataState extends State<ViewData> {
                         value: ViewDataBy.number,
                         groupValue: _mode,
                         onChanged: (ViewDataBy value) {
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
                           setState(() {
                             _mode = value;
                             _radioVal = "number";
@@ -90,7 +97,7 @@ class _ViewDataState extends State<ViewData> {
                     ? Container(
                         padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: TextFormField(
-                          obscureText: true,
+                         // obscureText: true,
                           controller: _inputType,
                           keyboardType: TextInputType.text,
                           validator: (value) {
@@ -109,7 +116,7 @@ class _ViewDataState extends State<ViewData> {
                         ? Container(
                             padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                             child: TextFormField(
-                              obscureText: true,
+                             // obscureText: true,
                               controller: _inputType,
                               keyboardType: TextInputType.text,
                               validator: (value) {
@@ -126,6 +133,7 @@ class _ViewDataState extends State<ViewData> {
                           )
                         : Text(""),
                 FloatingActionButton(
+                  child: Text('Save'),
                     onPressed: (){
                       if (_formKey.currentState.validate()) {
                         debugPrint("FormValidate");

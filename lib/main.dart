@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_api_demo/services/rest_api_services.dart';
 import 'package:flutter_api_demo/view.dart';
 
 void main() {
   runApp(MaterialApp(
     home: MyApp(),
+    debugShowCheckedModeBanner: false,
   ));
 }
 
@@ -16,34 +18,43 @@ class _APIDemo extends State<MyApp> {
   TextEditingController nameController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print('init');
+    getAllContacts();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('API Demo'),
+          title: Text('API Creation and Hosting NodeJS'),
         ),
         body: Padding(
             padding: EdgeInsets.all(10),
             child: ListView(
               children: <Widget>[
+                // Container(
+                //     alignment: Alignment.center,
+                //     padding: EdgeInsets.all(10),
+                //     child: Text('',
+                //       style: TextStyle(
+                //           color: Colors.blue,
+                //           fontWeight: FontWeight.w500,
+                //           fontSize: 30),
+                //     )),
                 Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'API Creation and Hosting\nNodeJS',
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 30),
-                    )),
-                Container(
-                    alignment: Alignment.center,
+                    alignment: Alignment.topCenter,
                     padding: EdgeInsets.all(10),
                     child: Text(
                       '!!Guided by Ankit Sir!!',
                       style: TextStyle(fontSize: 20),
                     )),
+                SizedBox(
+                  height: 20.0,
+                ),
                 Form(
                   key: _formKey,
                   child: Column(
@@ -55,8 +66,8 @@ class _APIDemo extends State<MyApp> {
                           keyboardType: TextInputType.name,
                           maxLines: 1,
                           maxLength: 20,
-                          validator: (value){
-                            if(value == null || value == "" || value.isEmpty){
+                          validator: (value) {
+                            if (value == null || value == "" || value.isEmpty) {
                               return "Valid Name Required";
                             }
                             return null;
@@ -70,13 +81,13 @@ class _APIDemo extends State<MyApp> {
                       Container(
                         padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: TextFormField(
-                          obscureText: true,
+                          //obscureText: true,
                           controller: mobileController,
                           keyboardType: TextInputType.number,
                           maxLines: 1,
                           maxLength: 10,
-                          validator: (value){
-                            if(value.length < 10){
+                          validator: (value) {
+                            if (value.length < 10) {
                               return "Valid Mobile Number Required";
                             }
                             return null;
@@ -108,29 +119,26 @@ class _APIDemo extends State<MyApp> {
                     )),
                 Container(
                     child: Row(
-                      children: <Widget>[
-                        Text('View Saved Data'),
-                        FlatButton(
-                          textColor: Colors.blue,
-                          child: Text(
-                            'Click here',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ViewData()),
-                            );
-                          },
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ))
+                  children: <Widget>[
+                    Text('View Saved Data'),
+                    FlatButton(
+                      textColor: Colors.blue,
+                      child: Text(
+                        'Click here',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ViewData()),
+                        );
+                      },
+                    )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ))
               ],
-            )
-        )
-
-    );
+            )));
   }
 
   /*
@@ -138,7 +146,7 @@ class _APIDemo extends State<MyApp> {
   Save Data into API
   ============
    */
-  void _saveData(){
+  void _saveData() {
     debugPrint("Save button clicked");
     debugPrint(nameController.text);
     debugPrint(mobileController.text);
