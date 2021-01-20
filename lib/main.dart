@@ -46,7 +46,7 @@ class _APIDemo extends State<MyApp> {
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(10),
                     child: Text(
-                      '!!Guided by Ankit Sir!!',
+                      'Name can be updated via this form by entering existing number',
                       style: TextStyle(fontSize: 20),
                     )),
                 Form(
@@ -75,7 +75,7 @@ class _APIDemo extends State<MyApp> {
                       Container(
                         padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: TextFormField(
-                          obscureText: true,
+                          //obscureText: true,
                           controller: mobileController,
                           keyboardType: TextInputType.number,
                           maxLines: 1,
@@ -104,7 +104,7 @@ class _APIDemo extends State<MyApp> {
                       child: Text('Save'),
                       onPressed: () {
                         setState(() {
-                          debugPrint("Save button clicked");
+                          //debugPrint("Save button clicked");
                           if (_formKey.currentState.validate()) {
                             _saveData();
                           }
@@ -141,8 +141,129 @@ class _APIDemo extends State<MyApp> {
   ============
    */
   void _saveData() {
-    debugPrint("Save button clicked");
-    debugPrint(nameController.text);
-    debugPrint(mobileController.text);
+    //debugPrint("Save button clicked");
+    saveDataAPI(nameController.text, mobileController.text).then((value) {
+      if(value == "Saved"){
+        nameController.clear();
+        mobileController.clear();
+        showAlertDialog(context, value);
+      }else if(value == "Exist"){
+        //show alert
+        _asyncConfirmDialog(context, nameController.text, mobileController.text).then((value) {
+          //print(value);
+          if(value.toString() == "ConfirmAction.Accept"){
+            nameController.clear();
+            mobileController.clear();
+           showAlertDialog(context, "Updated");
+          }
+          if(value.toString() == "ConfirmAction.Delete"){
+            nameController.clear();
+            mobileController.clear();
+            showAlertDialog(context, "Deleted");
+          }
+        });
+      }
+
+    }).catchError((onError) {
+      print("Error While Adding Contact");
+      print(onError);
+    });
   }
+}
+
+/*
+===============================
+Update/Delete/Cancel Alert Dialog Box
+===============================
+ */
+enum ConfirmAction {Cancel, Accept, Delete}
+Future<ConfirmAction> _asyncConfirmDialog(BuildContext context, String name, String number) async {
+  return showDialog<ConfirmAction>(
+    context: context,
+    barrierDismissible: false, // user must tap button for close dialog!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Duplicate Entry!!'),
+        content: const Text(
+            'This mobile number is already registered with another name.\nDo you want to update name with same number or delete old data?'),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text('Update'),
+            onPressed: () {
+              //Update code here
+              //print("Update");
+              updateContact(name, number).then((value) {
+                // if(value == "Updated"){
+                //   print("Contact");
+                //   print(value);
+                // }
+              }).catchError((onError) {
+                print("Error While Adding Contact");
+                print(onError);
+              });
+              Navigator.of(context).pop(ConfirmAction.Accept);
+            },
+          ),
+          FlatButton(
+            child: const Text('Delete'),
+            onPressed: () {
+              //Delete code here
+              //print("Delete");
+              deleteOneContact(number).then((value) {
+                // if(value == "Deleted"){
+                //   print("Contact");
+                //   print(value);
+                // }else{
+                //   //show error message
+                // }
+              }).catchError((onError) {
+                print("Error While Adding Contact");
+                print(onError);
+              });
+              Navigator.of(context).pop(ConfirmAction.Delete);
+            },
+          ),
+          FlatButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+             // print("Cancel");
+              Navigator.of(context).pop(ConfirmAction.Cancel);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+/*
+==============================
+Status Dialog Box
+==============================
+ */
+showAlertDialog(BuildContext context, String message) {
+  // Create button
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // Create AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text(message),
+    content: Text("Record has been $message"),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

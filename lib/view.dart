@@ -97,53 +97,65 @@ class _ViewDataState extends State<ViewData> {
               _radioVal == "name"
                   ? Container(
                       padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: TextFormField(
-                        // obscureText: true,
-                        controller: _inputType,
-                        keyboardType: TextInputType.text,
-                        validator: (value) {
-                          if (value == null || value == "" || value.isEmpty) {
-                            return "Valid Name Required";
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Full Name',
-                        ),
-                      ),
-                    )
-                  : _radioVal == "number"
-                      ? Container(
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                          child: TextFormField(
+                      child: Column(
+                        children: [
+                          TextFormField(
                             // obscureText: true,
                             controller: _inputType,
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.text,
                             validator: (value) {
-                              if (value.length < 10) {
-                                return "Valid Mobile Number Required";
+                              if (value == null || value == "" || value.isEmpty) {
+                                return "Valid Name Required";
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Mobile Number',
+                              labelText: 'Full Name',
                             ),
                           ),
+                          FloatingActionButton(onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              debugPrint("By name");
+                            }
+                          })
+                        ],
+                      ),
+                    )
+                  : _radioVal == "number"
+                      ? Container(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                // obscureText: true,
+                                controller: _inputType,
+                                keyboardType: TextInputType.number,
+                                validator: (value) {
+                                  if (value.length < 10) {
+                                    return "Valid Mobile Number Required";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Mobile Number',
+                                ),
+                              ),
+                              FloatingActionButton(onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  debugPrint("By number");
+                                }
+                              })
+                            ],
+                          ),
                         )
-                      : Expanded(child: getContactListView()),
+                      : Expanded(child: _getContactListView()),
 
               //
               // SingleChildScrollView(
               //             child: getContactListView(),
               //           ),
-              FloatingActionButton(onPressed: () {
-                if (_formKey.currentState.validate()) {
-                  debugPrint("FormValidate");
-                  _fetchAPI();
-                }
-              })
             ],
           ),
         ),
@@ -168,7 +180,7 @@ class _ViewDataState extends State<ViewData> {
     });
   }
 
-  ListView getContactListView() {
+  ListView _getContactListView() {
     TextStyle titleStyle = Theme.of(context).textTheme.subhead;
 
     return ListView.builder(
