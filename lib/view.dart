@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_api_demo/model/contact_model.dart';
 import 'package:flutter_api_demo/services/rest_api_services.dart';
 
+import 'main.dart';
+
 enum ViewDataBy { name, number, all }
 
 class ViewData extends StatefulWidget {
@@ -145,6 +147,12 @@ class _ViewDataState extends State<ViewData> {
                               FloatingActionButton(onPressed: () {
                                 if (_formKey.currentState.validate()) {
                                   debugPrint("By number");
+                                  print(_inputType.text);
+                                  contactData.where((element) {
+                                    print(contactData[element]['name']);
+                                    return null;
+                                  });
+
                                 }
                               })
                             ],
@@ -207,7 +215,15 @@ class _ViewDataState extends State<ViewData> {
                 ),
               ],
             ),
-            onTap: () {},
+            onTap: () {
+              print("onTap number- ");
+              print(contactData[position]['number']);
+            },
+            onLongPress: (){
+              print("onTap name- ");
+              asyncConfirmDialog(context, contactData[position]['name'], contactData[position]['number'], "Delete Action", "This record will be permanently delete from data base, do you want to delete?");
+              print(contactData[position]['name']);
+            },
           ),
 
           //Text(this.noteList[position].address),

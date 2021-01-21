@@ -149,7 +149,7 @@ class _APIDemo extends State<MyApp> {
         showAlertDialog(context, value);
       }else if(value == "Exist"){
         //show alert
-        _asyncConfirmDialog(context, nameController.text, mobileController.text).then((value) {
+        asyncConfirmDialog(context, nameController.text, mobileController.text, "Number Exist", "You can update old name with new, or delete record.").then((value) {
           //print(value);
           if(value.toString() == "ConfirmAction.Accept"){
             nameController.clear();
@@ -177,16 +177,16 @@ Update/Delete/Cancel Alert Dialog Box
 ===============================
  */
 enum ConfirmAction {Cancel, Accept, Delete}
-Future<ConfirmAction> _asyncConfirmDialog(BuildContext context, String name, String number) async {
+Future<ConfirmAction> asyncConfirmDialog(BuildContext context, String name, String number, String titleConfirm, String message) async {
   return showDialog<ConfirmAction>(
     context: context,
     barrierDismissible: false, // user must tap button for close dialog!
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Duplicate Entry!!'),
-        content: const Text(
-            'This mobile number is already registered with another name.\nDo you want to update name with same number or delete old data?'),
+        title: Text('$titleConfirm'),
+        content: Text(message),
         actions: <Widget>[
+          titleConfirm == "Delete Action" ? Text("") :
           FlatButton(
             child: const Text('Update'),
             onPressed: () {
