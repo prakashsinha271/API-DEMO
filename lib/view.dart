@@ -34,92 +34,72 @@ class _ViewDataState extends State<ViewData> {
       appBar: AppBar(
         title: Text('View API Data'),
       ),
-      body: Container(
-        padding: EdgeInsets.all(15.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Radio(
-                      value: ViewDataBy.name,
-                      groupValue: _mode,
-                      onChanged: (ViewDataBy value) {
-                        if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.unfocus();
-                        }
-                        setState(() {
-                          _mode = value;
-                          _radioVal = "name";
-                          _inputType.clear();
-                        });
-                      },
+      body: Column(
+        children: [
+          Container(
+            height: 200,
+            padding: EdgeInsets.all(15.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Radio(
+                          value: ViewDataBy.name,
+                          groupValue: _mode,
+                          onChanged: (ViewDataBy value) {
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            setState(() {
+                              _mode = value;
+                              _radioVal = "name";
+                              _inputType.clear();
+                            });
+                          },
+                        ),
+                        Text("Name"),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Radio(
+                          value: ViewDataBy.number,
+                          groupValue: _mode,
+                          onChanged: (ViewDataBy value) {
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            setState(() {
+                              _mode = value;
+                              _radioVal = "number";
+                              _inputType.clear();
+                            });
+                          },
+                        ),
+                        Text("Number"),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Radio(
+                          value: ViewDataBy.all,
+                          groupValue: _mode,
+                          onChanged: (ViewDataBy value) {
+                            setState(() {
+                              _mode = value;
+                              _radioVal = "all";
+                              _inputType.clear();
+                            });
+                          },
+                        ),
+                        Text("All Data"),
+                      ],
                     ),
-                    Text("Name"),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Radio(
-                      value: ViewDataBy.number,
-                      groupValue: _mode,
-                      onChanged: (ViewDataBy value) {
-                        if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.unfocus();
-                        }
-                        setState(() {
-                          _mode = value;
-                          _radioVal = "number";
-                          _inputType.clear();
-                        });
-                      },
-                    ),
-                    Text("Number"),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Radio(
-                      value: ViewDataBy.all,
-                      groupValue: _mode,
-                      onChanged: (ViewDataBy value) {
-                        setState(() {
-                          _mode = value;
-                          _radioVal = "all";
-                          _inputType.clear();
-                        });
-                      },
-                    ),
-                    Text("All Data"),
-                  ],
-                ),
-              ),
-              _radioVal == "name"
-                  ? Container(
-                      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            // obscureText: true,
-                            controller: _inputType,
-                            keyboardType: TextInputType.text,
-                            validator: (value) {
-                              if (value == null || value == "" || value.isEmpty) {
-                                return "Valid Name Required";
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Full Name',
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : _radioVal == "number"
+                  ),
+                  _radioVal == "name"
                       ? Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                           child: Column(
@@ -127,35 +107,66 @@ class _ViewDataState extends State<ViewData> {
                               TextFormField(
                                 // obscureText: true,
                                 controller: _inputType,
-                                keyboardType: TextInputType.number,
+                                keyboardType: TextInputType.text,
                                 validator: (value) {
-                                  if (value.length < 10) {
-                                    return "Valid Mobile Number Required";
+                                  if (value == null || value == "" || value.isEmpty) {
+                                    return "Valid Name Required";
                                   }
                                   return null;
                                 },
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Mobile Number',
+                                  labelText: 'Full Name',
                                 ),
                               ),
                             ],
                           ),
                         )
-                      : Expanded(child: _getContactListView()),
-              FloatingActionButton(onPressed: () {
-                if (_formKey.currentState.validate()) {
-                  for(int pos = 0;pos<contactData.length;pos++){
-                    if(contactData[pos][_radioVal]== _inputType.text){
-                      print(contactData[pos]['name']);
-                      print(contactData[pos]['number']);
-                    }else{print("No data found");}
-                  }
-                }
-              })
-            ],
+                      : _radioVal == "number"
+                          ? Container(
+                              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    // obscureText: true,
+                                    controller: _inputType,
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value.length < 10) {
+                                        return "Valid Mobile Number Required";
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Mobile Number',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Text(""),
+                  /*FloatingActionButton(onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      for(int pos = 0;pos<contactData.length;pos++){
+                        if(contactData[pos][_radioVal]== _inputType.text){
+                          print(contactData[pos]['name']);
+                          print(contactData[pos]['number']);
+                        }else{print("No data found");}
+                      }
+                    }
+                  })*/
+                ],
+              ),
+            ),
           ),
-        ),
+
+        Container(child:
+            _radioVal=="name"?Text(""):_radioVal=="number"?Text(""):
+             Expanded(child: _getContactListView(),),
+        )
+        ],
+
       ),
     );
   }
@@ -171,6 +182,7 @@ class _ViewDataState extends State<ViewData> {
         var d = {"name": name, "number": number};
         setState(() {
           contactData.add(d);
+
         });
       }
       print(contactData);
@@ -221,6 +233,7 @@ class _ViewDataState extends State<ViewData> {
     );
   }
 }
+
 
 class ContactList extends StatelessWidget {
   final List<ContactModel> contacts;
