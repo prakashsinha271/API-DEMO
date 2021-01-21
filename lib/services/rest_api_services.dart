@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'package:flutter_api_demo/model/contact_model.dart';
 import 'package:http/http.dart' as http;
+
+
+
+
 final baseUrl = 'http://10.0.2.2:3005/contacts';
 
 //GET ALL CONTACTS

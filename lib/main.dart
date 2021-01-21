@@ -1,270 +1,123 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_api_demo/new.dart';
 import 'package:flutter_api_demo/services/rest_api_services.dart';
 import 'package:flutter_api_demo/view.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: MyApp(),
+    home: Home(),
     debugShowCheckedModeBanner: false,
   ));
 }
 
-class MyApp extends StatefulWidget {
+class Home extends StatefulWidget {
   @override
-  _APIDemo createState() => _APIDemo();
+  _HomeState createState() => _HomeState();
 }
 
-class _APIDemo extends State<MyApp> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController mobileController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+class _HomeState extends State<Home> {
+  var contactData = [];
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _fetchAPI();
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('API Demo'),
+      appBar: AppBar(
+        title: Text('Contacts App'),
+      ),
+      body:Container(
+          child: _getContactListView()),
+
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          children: [
+            IconButton(icon: Icon(Icons.menu), onPressed: () {}),
+            Spacer(),
+            IconButton(icon: Icon(Icons.search), onPressed: () {Navigator.push(context,   MaterialPageRoute(builder: (context) => ViewData()));}),
+            IconButton(icon: Icon(Icons.more_vert), onPressed: () {}),
+          ],
         ),
-        body: Padding(
-            padding: EdgeInsets.all(10),
-            child: ListView(
-              children: <Widget>[
-                Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'API Creation and Hosting\nNodeJS',
-                      style:
-                      TextStyle(color: Colors.blue, fontWeight: FontWeight.w500, fontSize: 30),
-                    )),
-                Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Name can be updated via this form by entering existing number',
-                      style: TextStyle(fontSize: 20),
-                    )),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        child: TextFormField(
-                          controller: nameController,
-                          keyboardType: TextInputType.name,
-                          maxLines: 1,
-                          maxLength: 20,
-                          validator: (value) {
-                            if (value == null || value == "" || value.isEmpty) {
-                              return "Valid Name Required";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Full Name',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                        child: TextFormField(
-                          //obscureText: true,
-                          controller: mobileController,
-                          keyboardType: TextInputType.number,
-                          maxLines: 1,
-                          maxLength: 10,
-                          validator: (value) {
-                            if (value.length < 10) {
-                              return "Valid Mobile Number Required";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Mobile Number',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                    height: 50,
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: RaisedButton(
-                      textColor: Colors.white,
-                      color: Colors.blue,
-                      child: Text('Save'),
-                      onPressed: () {
-                        setState(() {
-                          //debugPrint("Save button clicked");
-                          if (_formKey.currentState.validate()) {
-                            _saveData();
-                          }
-                        });
-                      },
-                    )),
-                Container(
-                    child: Row(
-                      children: <Widget>[
-                        Text('View Saved Data'),
-                        FlatButton(
-                          textColor: Colors.blue,
-                          child: Text(
-                            'Click here',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ViewData()),
-                            );
-                          },
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ))
-              ],
-            )));
+      ),
+      floatingActionButton:FloatingActionButton(child: Icon(Icons.add), onPressed: () { Navigator.push(context,   MaterialPageRoute(builder: (context) => NewScreen())).then((value){_fetchAPI();});
+      @override
+      void dispose() {
+        // TODO: implement dispose
+        super.dispose();
+        Home();
+      }}),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
   }
 
-  /*
-  ============
-  Save Data into API
-  ============
-   */
-  void _saveData() {
-    //debugPrint("Save button clicked");
-    saveDataAPI(nameController.text, mobileController.text).then((value) {
-      if(value == "Saved"){
-        nameController.clear();
-        mobileController.clear();
-        showAlertDialog(context, value);
-      }else if(value == "Exist"){
-        //show alert
-        asyncConfirmDialog(context, nameController.text, mobileController.text, "Number Exist", "You can update old name with new, or delete record.").then((value) {
-          //print(value);
-          if(value.toString() == "ConfirmAction.Accept"){
-            nameController.clear();
-            mobileController.clear();
-            showAlertDialog(context, "Updated");
-          }
-          if(value.toString() == "ConfirmAction.Delete"){
-            nameController.clear();
-            mobileController.clear();
-            showAlertDialog(context, "Deleted");
-          }
+  void _fetchAPI() {
+    var contactDataFromApi = getAllContacts();
+    print("init ");
+    contactDataFromApi.then((value) {
+      // print(value);
+      for (var data in value) {
+        var name = data.name;
+        var number = data.number;
+        var d = {"name": name, "number": number};
+        setState(() {
+          contactData.add(d);
         });
       }
-
-    }).catchError((onError) {
-      print("Error While Adding Contact");
-      print(onError);
+      print(contactData);
     });
+  }
+
+  ListView _getContactListView() {
+    TextStyle titleStyle = Theme.of(context).textTheme.subhead;
+
+    return ListView.builder(
+      itemCount: contactData.length,
+      itemBuilder: (BuildContext context, int position) {
+        return Card(
+          color: Colors.white,
+          elevation: 2.0,
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.redAccent[200],
+              child: Icon(Icons.person),
+            ),
+            title: Row(
+              children: [
+                Text(
+                  contactData[position]['name'],
+                  style: TextStyle(color: Colors.red[800], backgroundColor: Colors.white),
+                ),
+                Spacer(),
+                Text(
+                  contactData[position]['number'],
+                  style: TextStyle(color: Colors.red[800], backgroundColor: Colors.white),
+                ),
+              ],
+            ),
+            onTap: () {
+              print("onTap number- ");
+              print(contactData[position]['number']);
+            },
+            onLongPress: (){
+              print("onTap name- ");
+              asyncConfirmDialog(context, contactData[position]['name'], contactData[position]['number'], "Delete Action", "This record will be permanently delete from data base, do you want to delete?");
+              print(contactData[position]['name']);
+            },
+          ),
+
+          //Text(this.noteList[position].address),
+        );
+      },
+    );
   }
 }
 
-/*
-===============================
-Update/Delete/Cancel Alert Dialog Box
-===============================
- */
-enum ConfirmAction {Cancel, Accept, Delete}
-Future<ConfirmAction> asyncConfirmDialog(BuildContext context, String name, String number, String titleConfirm, String message) async {
-  return showDialog<ConfirmAction>(
-    context: context,
-    barrierDismissible: false, // user must tap button for close dialog!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('$titleConfirm'),
-        content: Text(message),
-        actions: <Widget>[
-          titleConfirm == "Delete Action" ? Text("") :
-          FlatButton(
-            child: const Text('Update'),
-            onPressed: () {
-              //Update code here
-              //print("Update");
-              updateContact(name, number).then((value) {
-                // if(value == "Updated"){
-                //   print("Contact");
-                //   print(value);
-                // }
-              }).catchError((onError) {
-                print("Error While Adding Contact");
-                print(onError);
-              });
-              Navigator.of(context).pop(ConfirmAction.Accept);
-            },
-          ),
-          FlatButton(
-            child: const Text('Delete'),
-            onPressed: () {
-              //Delete code here
-              //print("Delete");
-              deleteOneContact(number).then((value) {
-                // if(value == "Deleted"){
-                //   print("Contact");
-                //   print(value);
-                // }else{
-                //   //show error message
-                // }
-              }).catchError((onError) {
-                print("Error While Adding Contact");
-                print(onError);
-              });
-              Navigator.of(context).pop(ConfirmAction.Delete);
-            },
-          ),
-          FlatButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              // print("Cancel");
-              Navigator.of(context).pop(ConfirmAction.Cancel);
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 
-/*
-==============================
-Status Dialog Box
-==============================
- */
-showAlertDialog(BuildContext context, String message) {
-  // Create button
-  Widget okButton = FlatButton(
-    child: Text("OK"),
-    onPressed: () {
-      Navigator.of(context).pop();
-    },
-  );
 
-  // Create AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text(message),
-    content: Text("Record has been $message"),
-    actions: [
-      okButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_api_demo/model/contact_model.dart';
 import 'package:flutter_api_demo/services/rest_api_services.dart';
-
-import 'main.dart';
+import 'new.dart';
 
 enum ViewDataBy { name, number, all }
 

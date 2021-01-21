@@ -2,19 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_api_demo/services/rest_api_services.dart';
 import 'package:flutter_api_demo/view.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: MyApp(),
-    debugShowCheckedModeBanner: false,
-  ));
-}
-
-class MyApp extends StatefulWidget {
+class NewScreen extends StatefulWidget {
   @override
-  _APIDemo createState() => _APIDemo();
+  _NewScreen createState() => _NewScreen();
 }
 
-class _APIDemo extends State<MyApp> {
+class _NewScreen extends State<NewScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
