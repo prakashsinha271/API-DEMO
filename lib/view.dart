@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_api_demo/model/contact_model.dart';
 import 'package:flutter_api_demo/services/rest_api_services.dart';
-
-import 'main.dart';
+import 'new.dart';
 
 enum ViewDataBy { name, number, all }
 
@@ -198,6 +197,8 @@ class _ViewDataState extends State<ViewData> {
     print("init fetchAPI method");
     contactDataFromApi.then((value) {
       print(value);
+      contactData.clear();
+      newDataList.clear();
       for (var data in value) {
         var name = data.name;
         var number = data.number;
@@ -246,7 +247,9 @@ class _ViewDataState extends State<ViewData> {
             },
             onLongPress: (){
               print("onTap name- ");
-              asyncConfirmDialog(context, newDataList[position]['name'], newDataList[position]['number'], "Delete Action", "This record will be permanently delete from data base, do you want to delete?");
+              asyncConfirmDialog(context, newDataList[position]['name'], newDataList[position]['number'], "Delete Action", "This record will be permanently delete from data base, do you want to delete?").then((value) {
+                _fetchAPI();
+              });
               print(newDataList[position]['name']);
             },
           ),

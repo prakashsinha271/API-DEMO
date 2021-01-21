@@ -1,8 +1,9 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_api_demo/model/contact_model.dart';
 import 'package:http/http.dart' as http;
+
+
+
 
 final baseUrl = 'http://10.0.2.2:8000/contacts';
 
@@ -28,6 +29,7 @@ Future<List<ContactModel>> getAllContacts() async {
 //GET CONTACT BY NUMBER
 
 //GET CONTACT_BY_NAME
+
 
 //ADD_CONTACT INTO API
 Future<String> saveDataAPI(String name, String number) async {
@@ -95,4 +97,3 @@ Future<String> deleteOneContact(String number) async {
         'Error while deleting contact');
   }
 }
-
