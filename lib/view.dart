@@ -18,6 +18,7 @@ class _ViewDataState extends State<ViewData> {
   TextEditingController _inputType;
   String _radioVal;
   var contactData = [];
+  var newDataList = [];
 
   @override
   void initState() {
@@ -25,6 +26,33 @@ class _ViewDataState extends State<ViewData> {
     _fetchAPI();
     _inputType = TextEditingController();
     _radioVal = "name";
+  }
+
+   onItemChanged(String value){
+   setState(() {
+     newDataList = contactData
+         .where((string) => string['name'].toLowerCase().contains(value.toLowerCase()))
+         .toList();
+   });
+    for(int pos = 0;pos<contactData.length;pos++){
+      if(contactData[pos][_radioVal].toString().toLowerCase().contains(_inputType.text.toLowerCase())){
+        print(contactData[pos]['name']);
+        print(contactData[pos]['number']);
+      }
+    }
+  }
+  onNumberChanged(String value){
+    setState(() {
+      newDataList = contactData
+          .where((object) => object['number'].contains(value))
+          .toList();
+    });
+    for(int pos = 0;pos<contactData.length;pos++){
+      if(contactData[pos][_radioVal].toString().toLowerCase().contains(_inputType.text.toLowerCase())){
+        print(contactData[pos]['name']);
+        print(contactData[pos]['number']);
+      }
+    }
   }
 
   @override
@@ -59,6 +87,7 @@ class _ViewDataState extends State<ViewData> {
                               _mode = value;
                               _radioVal = "name";
                               _inputType.clear();
+                              newDataList = contactData;
                             });
                           },
                         ),
@@ -77,6 +106,7 @@ class _ViewDataState extends State<ViewData> {
                               _mode = value;
                               _radioVal = "number";
                               _inputType.clear();
+                              newDataList = contactData;
                             });
                           },
                         ),
@@ -92,6 +122,7 @@ class _ViewDataState extends State<ViewData> {
                               _mode = value;
                               _radioVal = "all";
                               _inputType.clear();
+                              newDataList = contactData;
                             });
                           },
                         ),
@@ -108,6 +139,7 @@ class _ViewDataState extends State<ViewData> {
                                 // obscureText: true,
                                 controller: _inputType,
                                 keyboardType: TextInputType.text,
+                                onChanged: onItemChanged,
                                 validator: (value) {
                                   if (value == null || value == "" || value.isEmpty) {
                                     return "Valid Name Required";
@@ -132,11 +164,12 @@ class _ViewDataState extends State<ViewData> {
                                     controller: _inputType,
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
-                                      if (value.length < 10) {
+                                      if (value == "") {
                                         return "Valid Mobile Number Required";
                                       }
                                       return null;
                                     },
+                                    onChanged: onNumberChanged,
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(),
                                       labelText: 'Mobile Number',
@@ -146,23 +179,12 @@ class _ViewDataState extends State<ViewData> {
                               ),
                             )
                           : Text(""),
-                  /*FloatingActionButton(onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      for(int pos = 0;pos<contactData.length;pos++){
-                        if(contactData[pos][_radioVal]== _inputType.text){
-                          print(contactData[pos]['name']);
-                          print(contactData[pos]['number']);
-                        }else{print("No data found");}
-                      }
-                    }
-                  })*/
                 ],
               ),
             ),
           ),
 
         Container(child:
-            _radioVal=="name"?Text(""):_radioVal=="number"?Text(""):
              Expanded(child: _getContactListView(),),
         )
         ],
@@ -173,19 +195,21 @@ class _ViewDataState extends State<ViewData> {
 
   void _fetchAPI() {
     var contactDataFromApi = getAllContacts();
-    print("init ");
+    print("init fetchAPI method");
     contactDataFromApi.then((value) {
-      // print(value);
+      print(value);
       for (var data in value) {
         var name = data.name;
         var number = data.number;
         var d = {"name": name, "number": number};
         setState(() {
           contactData.add(d);
-
         });
       }
-      print(contactData);
+      print("Printing newDataList");
+      newDataList = contactData;
+      print(newDataList.toString());
+      print(contactData.runtimeType);
     });
   }
 
@@ -193,7 +217,7 @@ class _ViewDataState extends State<ViewData> {
     TextStyle titleStyle = Theme.of(context).textTheme.subhead;
 
     return ListView.builder(
-      itemCount: contactData.length,
+      itemCount: newDataList.length,
       itemBuilder: (BuildContext context, int position) {
         return Card(
           color: Colors.white,
@@ -206,24 +230,24 @@ class _ViewDataState extends State<ViewData> {
             title: Row(
               children: [
                 Text(
-                  contactData[position]['name'],
+                  newDataList[position]['name'],
                   style: TextStyle(color: Colors.red[800], backgroundColor: Colors.white),
                 ),
                 Spacer(),
                 Text(
-                  contactData[position]['number'],
+                  newDataList[position]['number'],
                   style: TextStyle(color: Colors.red[800], backgroundColor: Colors.white),
                 ),
               ],
             ),
             onTap: () {
               print("onTap number- ");
-              print(contactData[position]['number']);
+              print(newDataList[position]['number']);
             },
             onLongPress: (){
               print("onTap name- ");
-              asyncConfirmDialog(context, contactData[position]['name'], contactData[position]['number'], "Delete Action", "This record will be permanently delete from data base, do you want to delete?");
-              print(contactData[position]['name']);
+              asyncConfirmDialog(context, newDataList[position]['name'], newDataList[position]['number'], "Delete Action", "This record will be permanently delete from data base, do you want to delete?");
+              print(newDataList[position]['name']);
             },
           ),
 
