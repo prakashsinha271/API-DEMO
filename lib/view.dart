@@ -116,11 +116,6 @@ class _ViewDataState extends State<ViewData> {
                               labelText: 'Full Name',
                             ),
                           ),
-                          FloatingActionButton(onPressed: () {
-                            if (_formKey.currentState.validate()) {
-                              debugPrint("By name");
-                            }
-                          })
                         ],
                       ),
                     )
@@ -144,26 +139,20 @@ class _ViewDataState extends State<ViewData> {
                                   labelText: 'Mobile Number',
                                 ),
                               ),
-                              FloatingActionButton(onPressed: () {
-                                if (_formKey.currentState.validate()) {
-                                  debugPrint("By number");
-                                  print(_inputType.text);
-                                  contactData.where((element) {
-                                    print(contactData[element]['name']);
-                                    return null;
-                                  });
-
-                                }
-                              })
                             ],
                           ),
                         )
                       : Expanded(child: _getContactListView()),
-
-              //
-              // SingleChildScrollView(
-              //             child: getContactListView(),
-              //           ),
+              FloatingActionButton(onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  for(int pos = 0;pos<contactData.length;pos++){
+                    if(contactData[pos][_radioVal]== _inputType.text){
+                      print(contactData[pos]['name']);
+                      print(contactData[pos]['number']);
+                    }else{print("No data found");}
+                  }
+                }
+              })
             ],
           ),
         ),
