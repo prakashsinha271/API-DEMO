@@ -8,13 +8,12 @@ class ContactModel {
   String number;
 
   factory ContactModel.fromJson(Map<String, dynamic> json) => ContactModel(
-    name: json["name"],
-    number: json["number"],
-  );
+        name: json["name"],
+        number: json["number"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "number": number,
-  };
+        "name": name,
+        "number": number,
+      };
 }
-
